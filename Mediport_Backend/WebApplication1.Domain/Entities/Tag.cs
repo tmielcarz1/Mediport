@@ -7,7 +7,6 @@ namespace WebApplication1.Domain.Entities
         [Key]
         [Required]
         public Guid Id { get; set; }
-
         public string? Name { get; set; }
         public int Count { get; set; }
 

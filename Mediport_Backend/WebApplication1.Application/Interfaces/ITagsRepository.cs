@@ -6,7 +6,7 @@ namespace WebApplication1.Application.Interfaces
 {
     public interface ITagsRepository
     {
-        public Task AddListTags(List<Tag> tags, CancellationToken ct);
+        public Task SyncListTags(List<Tag> tags, CancellationToken ct);
         public Task<List<Tag>> GetAllTags(CancellationToken ct);
         public Task<GetTagsResponse> GetTags(GetTagsRequest getTagsRequest, CancellationToken ct);
     }

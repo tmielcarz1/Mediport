@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApplication1.Infrastructure.Context;
 
@@ -11,9 +12,11 @@ using WebApplication1.Infrastructure.Context;
 namespace WebApplication1.Infrastructure.Migrations
 {
     [DbContext(typeof(MediportDbContext))]
-    partial class MediportDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260505113110_Tagfix2")]
+    partial class Tagfix2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

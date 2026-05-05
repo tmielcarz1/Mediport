@@ -212,7 +212,7 @@ namespace WebApplication1.Tests.UnitTests
             var result = await service.SyncTags(CancellationToken.None);
 
             _repoMock.Verify(
-                x => x.AddListTags(It.IsAny<List<Tag>>(), It.IsAny<CancellationToken>()),
+                x => x.SyncListTags(It.IsAny<List<Tag>>(), It.IsAny<CancellationToken>()),
                 Times.Once);
 
             ClassicAssert.IsFalse(result.IsNotValid);

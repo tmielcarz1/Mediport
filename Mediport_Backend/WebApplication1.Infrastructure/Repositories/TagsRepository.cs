@@ -18,21 +18,48 @@ namespace WebApplication1.Infrastructure.Repositories
             _mediportDbContext = mediportDbContext;
         }
 
-        public async Task AddListTags(List<Tag> tags, CancellationToken ct)
+        public async Task SyncListTags(List<Tag> tags, CancellationToken ct)
         {
-            var existingTagsNames = await _mediportDbContext.Tags
-                .Where(t => tags.Select(t => t.Name).ToList().Contains(t.Name))
-                .Select(t => t.Name)
-                .ToListAsync(ct);
+            var tagsToAdd = new List<Tag>();
 
-            var tagList = tags
-                .Where(t => !existingTagsNames.Contains(t.Name))
+            var normalizedTags = tags
+                .Where(t => !string.IsNullOrWhiteSpace(t.Name))
+                .GroupBy(t => t.Name!.Trim())
+                .Select(g => g.Last())
                 .ToList();
 
-            if (tagList.Count == 0)
-                return;
+            var tagNames = normalizedTags
+                .Select(t => t.Name!)
+                .ToList();
 
-            await _mediportDbContext.Tags.AddRangeAsync(tagList, ct);
+            var existingTags = await _mediportDbContext.Tags
+                .Where(t => tagNames.Contains(t.Name!))
+                .ToListAsync(ct);
+
+            var existingDict = existingTags.ToDictionary(t => t.Name!);
+
+            foreach (var tag in normalizedTags)
+            {
+                var name = tag.Name!.Trim();
+
+                if (existingDict.TryGetValue(name, out var existingTag))
+                {
+                    if (existingTag.Count != tag.Count)
+                        existingTag.Count = tag.Count;
+                }
+                else
+                {
+                    tagsToAdd.Add(new Tag
+                    {
+                        Name = name,
+                        Count = tag.Count
+                    });
+                }
+            }
+
+            if (tagsToAdd.Count > 0)
+                await _mediportDbContext.Tags.AddRangeAsync(tagsToAdd, ct);
+
             await _mediportDbContext.SaveChangesAsync(ct);
         }
 

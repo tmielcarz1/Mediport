@@ -73,7 +73,7 @@ namespace WebApplication1.Application.Services.Tags
 
             try
             {
-                await _tagsRepository.AddListTags(tagsList, ct);
+                await _tagsRepository.SyncListTags(tagsList, ct);
             }
             catch (Exception ex)
             {
