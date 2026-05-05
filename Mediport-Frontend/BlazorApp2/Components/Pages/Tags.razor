@@ -1,0 +1,51 @@
+﻿@page "/"
+@using BlazorApp2.Models.GetTags.Request
+@using BlazorApp2.Components.Shared
+
+<input class="form-control mb-2"
+       value="@request.SearchValue"
+       @oninput="OnSearchInput" />
+
+<table class="table table-striped w-100 table-fixed">
+    <colgroup>
+        <col style="width:33.33%" />
+        <col style="width:33.33%" />
+        <col style="width:33.33%" />
+    </colgroup>
+
+    <thead>
+        <tr>
+            <th style="cursor:pointer" @onclick="() => SortBy(GetTagsRequestOrderBy.Name)">
+                Name @GetSortIcon(GetTagsRequestOrderBy.Name)
+            </th>
+            <th style="cursor:pointer" @onclick="() => SortBy(GetTagsRequestOrderBy.Percentage)">
+                Percentage @GetSortIcon(GetTagsRequestOrderBy.Percentage)
+            </th>
+            <th>Count</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @if (items?.Any() == true)
+        {
+            foreach (var item in items)
+            {
+                <tr>
+                    <td class="text-truncate" style="max-width: 0;" title="@item.Name">
+                        @item.Name
+                    </td>
+                    <td>
+                        @item.Percentage.ToString(System.Globalization.CultureInfo.InvariantCulture)
+                    </td>
+                    <td>@item.Count</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<Pagination CurrentPage="_pageNumber"
+            TotalPages="TotalPages"
+            PageSize="_pageSize"
+            PageSizeChanged="OnPageSizeChanged"
+            CurrentPageChanged="OnPageChanged" />

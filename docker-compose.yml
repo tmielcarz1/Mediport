@@ -1,0 +1,44 @@
+services:
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mediport-sql
+    environment:
+      SA_PASSWORD: "Krzeslo1!"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql_data:/var/opt/mssql
+
+  backend:
+      build:
+        context: .
+        dockerfile: Mediport_Backend/Dockerfile
+      container_name: mediport-backend
+      depends_on:
+        - sqlserver
+      environment:
+        ASPNETCORE_URLS: "http://+:8080"
+        ConnectionStrings__DefaultConnection: "Server=sqlserver;Database=Mediport;User Id=sa;Password=Krzeslo1!;TrustServerCertificate=True"
+      ports:
+        - "5001:8080"
+
+  frontend:
+      build:
+        context: .
+        dockerfile: Mediport-Frontend/Dockerfile
+      container_name: mediport-frontend
+      depends_on:
+        - backend
+      ports:
+        - "5002:8080"
+      environment:
+        ApiBaseUrl: "http://backend:8080"
+      volumes:
+        - dataprotection-keys:/app/keys
+
+
+volumes:
+  sql_data:
+  dataprotection-keys:

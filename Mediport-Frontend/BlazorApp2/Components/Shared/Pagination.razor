@@ -1,0 +1,47 @@
+﻿<div class="row align-items-center mt-3 gy-2">
+
+    <div class="col-12 col-md-3 d-flex justify-content-md-start justify-content-center align-items-center gap-2">
+
+        <span>Ilość na stronę:</span>
+
+        <select class="form-select form-select-sm w-auto"
+                value="@PageSize"
+                @onchange="OnPageSizeChanged">
+            @foreach (var size in PageSizeOptions)
+            {
+                <option value="@size">@size</option>
+            }
+        </select>
+    </div>
+
+    <div class="col-12 col-md-6 d-flex justify-content-center">
+        <nav>
+            <ul class="pagination mb-0 flex-wrap justify-content-center">
+                <li class="page-item @(CurrentPage <= 1 ? "disabled" : "")">
+                    <button class="page-link page-nav" @onclick="GoPrevious">Previous</button>
+                </li>
+
+                @foreach (var p in Pages)
+                {
+                    <li class="page-item @(p == CurrentPage ? "active" : "")">
+                        <button class="page-link" @onclick="() => SelectPage(p)">
+                            @p
+                        </button>
+                    </li>
+                }
+
+                <li class="page-item @(CurrentPage >= TotalPages ? "disabled" : "")">
+                    <button class="page-link page-nav" @onclick="GoNext">Next</button>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+
+    <div class="col-12 col-md-3 d-flex justify-content-md-end justify-content-center">
+        <small class="text-muted">
+            @CurrentPage / @TotalPages
+        </small>
+    </div>
+
+</div>

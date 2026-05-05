@@ -1,0 +1,18 @@
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+WORKDIR /app
+EXPOSE 8080
+
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+
+COPY Mediport-Frontend/BlazorApp2/BlazorApp2.csproj Mediport-Frontend/BlazorApp2/
+RUN dotnet restore Mediport-Frontend/BlazorApp2/BlazorApp2.csproj
+
+COPY . .
+WORKDIR /src/Mediport-Frontend/BlazorApp2
+RUN dotnet publish -c Release -o /app/publish
+
+FROM base
+WORKDIR /app
+COPY --from=build /app/publish .
+ENTRYPOINT ["dotnet", "BlazorApp2.dll"]
